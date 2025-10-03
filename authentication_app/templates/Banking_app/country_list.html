@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Listado de Países{% endblock %}
+{% block content %}
+
+<h1>Países</h1>
+
+<!-- Botón crear -->
+<a href="{% url 'banking_app:country_create' %}" class="btn btn-success mb-3">+ Nuevo País</a>
+
+<!-- Búsqueda y filtros -->
+<form method="get" class="row g-3 mb-3">
+  <div class="col-auto">
+    <input type="text" name="q" class="form-control" placeholder="Buscar país..."
+           value="{{ search }}">
+  </div>
+  <div class="col-auto">
+    <select name="status" class="form-select">
+      <option value="">Todos</option>
+      <option value="1" {% if status_filter == '1' %}selected{% endif %}>Activos</option>
+      <option value="0" {% if status_filter == '0' %}selected{% endif %}>Inactivos</option>
+    </select>
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-primary">Filtrar</button>
+  </div>
+</form>
+
+<!-- Tabla -->
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Abrev.</th>
+      <th>Activo</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in page_obj %}
+    <tr>
+      <td>{{ c.id }}</td>
+      <td>{{ c.name }}</td>
+      <td>{{ c.abbrev }}</td>
+      <td>{% if c.status %}Sí{% else %}No{% endif %}</td>
+      <td>
+        <a class="btn btn-sm btn-primary" href="{% url 'banking_app:country_edit' c.id %}">Editar</a>
+        <a class="btn btn-sm btn-danger" href="{% url 'banking_app:country_delete' c.id %}">Eliminar</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">No hay países registrados.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<!-- Paginación -->
+<nav>
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page=1&q={{ search }}&status={{ status_filter }}">Primero</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ search }}&status={{ status_filter }}">Anterior</a></li>
+    {% endif %}
+
+    <li class="page-item active"><span class="page-link">{{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span></li>
+
+    {% if page_obj.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ search }}&status={{ status_filter }}">Siguiente</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&q={{ search }}&status={{ status_filter }}">Último</a></li>
+    {% endif %}
+  </ul>
+</nav>
+
+{% endblock %}

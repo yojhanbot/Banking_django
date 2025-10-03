@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ action }} País{% endblock %}
+{% block content %}
+  <h1>{{ action }} País</h1>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="mb-3">
+      {{ form.name.label_tag }}{{ form.name }}
+      {% if form.name.errors %}<div class="text-danger">{{ form.name.errors }}</div>{% endif %}
+    </div>
+    <div class="mb-3">
+      {{ form.abbrev.label_tag }}{{ form.abbrev }}
+      {% if form.abbrev.errors %}<div class="text-danger">{{ form.abbrev.errors }}</div>{% endif %}
+    </div>
+    <div class="form-check mb-3">
+      {{ form.status }} {{ form.status.label_tag }}
+    </div>
+    <button class="btn btn-success" type="submit">Guardar</button>
+    <a class="btn btn-secondary" href="{% url 'banking_app:country_list' %}">Cancelar</a>
+  </form>
+{% endblock %}
